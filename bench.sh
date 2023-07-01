@@ -74,6 +74,7 @@ speed() {
     speed_test '7582' 'Tsel-Jkt, ID'
     speed_test '1371' 'Tsel-Btm, ID'
     speed_test '2233' 'Tsel-Sby, ID'
+    speed_test '4235' 'Starhub-Ltd, SG'
     speed_test '37744' 'Tsel-Telin, SG'
     speed_test '13039' 'Indosat-Jkt, ID'
     speed_test '39334' 'Indosat-Mdn, ID'
