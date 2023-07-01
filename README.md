@@ -13,5 +13,5 @@ And Other Country Likes SG, NL & JP
 
 Link ↓
 ```
-curl -sS -H 'Cache-Control: no-cache, no-store' https://raw.githubusercontent.com/lunoxxdev/YeahhCr00ttttttttttt/blob/main/bench.shh | bash
+curl -sS -H 'Cache-Control: no-cache, no-store' https://raw.githubusercontent.com/lunoxxdev/YeahhCr00ttttttttttt/main/bench.shh | bash
 ```
