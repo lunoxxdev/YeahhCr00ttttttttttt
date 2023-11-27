@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Description: A Bench Script by Teddysunn
+# Description: A Bench Script by Teddysun
 #
 # Copyright (C) 2015 - 2022 Teddysun <i@teddysun.com>
 # Thanks: LookBack <admin@dwhd.org>
@@ -64,7 +64,7 @@ speed_test() {
         local up_speed=$(awk '/Upload/{print $3" "$4}' ./speedtest-cli/speedtest.log)
         local latency=$(awk '/Latency/{print $2" "$3}' ./speedtest-cli/speedtest.log)
         if [[ -n "${dl_speed}" && -n "${up_speed}" && -n "${latency}" ]]; then
-            printf "\033[0;33m%-18s\033[0;32m%-18s\033[0;32m%-18s\033[0;36m%-12s\033[0m\n" " ${nodeName}" "${dl_speed}" "${up_speed}" "${latency}"
+            printf "\033[0;33m%-18s\033[0;32m%-18s\033[0;32m%-18s\033[0;36m%-12s\033[0m\n" " ${nodeName}" "${up_speed}" "${dl_speed}" "${latency}"
         fi
     fi
 }
@@ -74,7 +74,6 @@ speed() {
     speed_test '7582' 'Tsel-Jkt, ID'
     speed_test '1371' 'Tsel-Btm, ID'
     speed_test '2233' 'Tsel-Sby, ID'
-    speed_test '4235' 'Starhub-Ltd, SG'
     speed_test '37744' 'Tsel-Telin, SG'
     speed_test '13039' 'Indosat-Jkt, ID'
     speed_test '39334' 'Indosat-Mdn, ID'
@@ -225,12 +224,12 @@ install_speedtest() {
         mkdir -p speedtest-cli && tar zxf speedtest.tgz -C ./speedtest-cli && chmod +x ./speedtest-cli/speedtest
         rm -f speedtest.tgz
     fi
-    printf "%-18s%-18s%-20s%-12s\n" " Node Name"   "Download Speed"   "Upload Speed"   "Latency"
+    printf "%-18s%-18s%-20s%-12s\n" " Node Name"   "Upload Speed"   "Download Speed"   "Latency"
 }
 
 print_intro() {
     echo "-------------------- A Bench.sh Script By Teddysun -------------------"
-    echo "--------------------------Mod By Lunoxx Impostor-------------------------"
+    echo "--------------------------MOD BY Lunoxx Impostor-------------------------"
     echo "----------------------------------------------------------------------"
     echo " Version            : $(_green 6.9)"
 }
@@ -310,6 +309,33 @@ print_system_info() {
     echo " Virtualization     : $(_blue "$virt")"
 }
 
+print_io_test() {
+    freespace=$( df -m . | awk 'NR==2 {print $4}' )
+    if [ -z "${freespace}" ]; then
+        freespace=$( df -m . | awk 'NR==3 {print $3}' )
+    fi
+    if [ ${freespace} -gt 1024 ]; then
+        writemb=2048
+        io1=$( io_test ${writemb} )
+        echo " I/O Speed(1st run) : $(_yellow "$io1")"
+        io2=$( io_test ${writemb} )
+        echo " I/O Speed(2nd run) : $(_yellow "$io2")"
+        io3=$( io_test ${writemb} )
+        echo " I/O Speed(3rd run) : $(_yellow "$io3")"
+        ioraw1=$( echo $io1 | awk 'NR==1 {print $1}' )
+        [ "`echo $io1 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw1=$( awk 'BEGIN{print '$ioraw1' * 1024}' )
+        ioraw2=$( echo $io2 | awk 'NR==1 {print $1}' )
+        [ "`echo $io2 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw2=$( awk 'BEGIN{print '$ioraw2' * 1024}' )
+        ioraw3=$( echo $io3 | awk 'NR==1 {print $1}' )
+        [ "`echo $io3 | awk 'NR==1 {print $2}'`" == "GB/s" ] && ioraw3=$( awk 'BEGIN{print '$ioraw3' * 1024}' )
+        ioall=$( awk 'BEGIN{print '$ioraw1' + '$ioraw2' + '$ioraw3'}' )
+        ioavg=$( awk 'BEGIN{printf "%.1f", '$ioall' / 3}' )
+        echo " I/O Speed(average) : $(_yellow "$ioavg MB/s")"
+    else
+        echo " $(_red "Not enough space for I/O Speed test!")"
+    fi
+}
+
 print_end_time() {
     end_time=$(date +%s)
     time=$(( ${end_time} - ${start_time} ))
@@ -334,6 +360,8 @@ print_intro
 next
 print_system_info
 ipv4_info
+next
+print_io_test
 next
 install_speedtest && speed && rm -fr speedtest-cli
 next
